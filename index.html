@@ -111,21 +111,39 @@
     .cta-btn:hover { opacity: 0.95; transform: translateY(-1px); }
     body {
       padding-top: 70px; /* Space for fixed header */
+      overflow-x: hidden;
     }
     main { 
       max-width: 1200px; 
       margin: 0 auto; 
-      padding: 2rem 1.5rem; 
+      padding: 0;
       min-height: calc(100vh - 70px);
+      position: relative;
     }
     section { margin-bottom: 0; }
     .page { 
       display: none; 
       margin-bottom: 0;
-      min-height: calc(100vh - 140px);
+      width: 100%;
       animation: fadeIn 0.3s ease-in;
     }
     .page.active { display: block; }
+    
+    /* Home page - only the hero box, fills viewport */
+    #home.hero {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 2rem;
+      margin: 0;
+    }
+    
+    /* Other pages - regular content, no hero box */
+    .page:not(#home) {
+      padding: 2rem 1.5rem;
+      min-height: calc(100vh - 70px);
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -135,10 +153,12 @@
       grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
       gap: 2rem;
       align-items: center;
-      padding: 2rem;
-      border-radius: 24px;
+      padding: 3rem 2rem;
+      border-radius: 0;
       background: linear-gradient(135deg, rgba(214,40,40,0.07), rgba(31,79,130,0.08));
-      box-shadow: var(--shadow);
+      box-shadow: none;
+      width: 100%;
+      max-width: 100%;
     }
     .hero figure {
       margin: 0;
@@ -151,7 +171,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center 20%; /* Crop from top, focus on subject */
+      object-position: center 10%; /* Vertically crop from top to remove black line */
       border-radius: var(--radius);
     }
     .hero h1 { font-size: clamp(2.4rem, 5vw, 3.3rem); margin: 0 0 1rem; color: var(--dark); }
@@ -303,14 +323,19 @@
         font-size: 0.85rem;
       }
       
-      .hero { 
-        padding: 1.5rem; 
+      #home.hero { 
+        padding: 2rem 1.5rem; 
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        min-height: calc(100vh - 60px);
       }
       .hero figure {
         max-height: 300px;
         order: 2;
+      }
+      .page:not(#home) {
+        padding: 1.5rem 1rem;
+        min-height: calc(100vh - 60px);
       }
       .hero h1 { font-size: clamp(1.8rem, 6vw, 2.5rem); }
       .hero p { font-size: 1rem; }
@@ -340,8 +365,9 @@
       }
       .logo img { height: 36px; max-width: 120px; }
       main { padding: 1rem 0.75rem; }
-      .hero { padding: 1rem; }
+      #home.hero { padding: 1.5rem 1rem; }
       .hero figure { max-height: 250px; }
+      .page:not(#home) { padding: 1rem 0.75rem; }
     }
   </style>
 </head>
@@ -654,6 +680,7 @@
           control.removeAttribute('aria-current');
         }
       });
+      
       if (!found && targetId !== 'home') {
         setActivePage('home');
       }
@@ -667,7 +694,10 @@
       if (control.tagName === 'A') event.preventDefault();
       history.replaceState(null, '', `#${page}`);
       setActivePage(page);
-      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+      // Always scroll to top when switching pages
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
       
       // Close mobile menu if open
       const nav = document.querySelector('nav');
