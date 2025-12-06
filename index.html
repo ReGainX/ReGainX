@@ -27,14 +27,17 @@
     header {
       background: #fff;
       border-bottom: 1px solid rgba(15,23,42,0.08);
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: 10;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.05);
     }
     .nav-bar {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 1rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -54,15 +57,15 @@
        - border-radius reset prevents unintended corner clipping for transparent logos
     */
     .logo img {
-      height: 64px;
+      height: 48px;
       width: auto;
-      max-width: 240px;
+      max-width: 200px;
       object-fit: contain;
       border-radius: 0; /* preserve transparent edges of the logo */
       display: block;
     }
-    @media (max-width: 640px) {
-      .logo img { height: 48px; max-width: 160px; }
+    @media (max-width: 768px) {
+      .logo img { height: 40px; max-width: 140px; }
     }
 
     nav ul {
@@ -71,34 +74,85 @@
       margin: 0;
       display: flex;
       gap: 1.2rem;
+      flex-wrap: wrap;
     }
     nav a[aria-current="page"] {
       color: var(--blue);
       font-weight: 700;
     }
+    nav a {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+    nav a:hover {
+      background: rgba(31,79,130,0.08);
+    }
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text);
+      padding: 0.5rem;
+    }
     .cta-btn, button {
       font-weight: 600;
-      padding: 0.85rem 1.8rem;
+      padding: 0.75rem 1.5rem;
       border-radius: 999px;
       border: none;
       cursor: pointer;
       transition: transform 0.2s ease, opacity 0.2s ease;
+      font-size: 0.9rem;
     }
     .cta-btn { background: var(--red); color: #fff; }
     .cta-btn:hover { opacity: 0.95; transform: translateY(-1px); }
-    main { max-width: 1200px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
-    section { margin-bottom: 4rem; }
-    .page { display: none; margin-bottom: 4rem; }
+    body {
+      padding-top: 70px; /* Space for fixed header */
+    }
+    main { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 2rem 1.5rem; 
+      min-height: calc(100vh - 70px);
+    }
+    section { margin-bottom: 0; }
+    .page { 
+      display: none; 
+      margin-bottom: 0;
+      min-height: calc(100vh - 140px);
+      animation: fadeIn 0.3s ease-in;
+    }
     .page.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .hero {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
-      gap: 2.5rem;
+      gap: 2rem;
       align-items: center;
-      padding: 3rem;
-      border-radius: 32px;
+      padding: 2rem;
+      border-radius: 24px;
       background: linear-gradient(135deg, rgba(214,40,40,0.07), rgba(31,79,130,0.08));
       box-shadow: var(--shadow);
+    }
+    .hero figure {
+      margin: 0;
+      overflow: hidden;
+      border-radius: var(--radius);
+      height: 100%;
+      max-height: 500px;
+    }
+    .hero figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%; /* Crop from top, focus on subject */
+      border-radius: var(--radius);
     }
     .hero h1 { font-size: clamp(2.4rem, 5vw, 3.3rem); margin: 0 0 1rem; color: var(--dark); }
     .hero p { font-size: 1.1rem; }
@@ -191,7 +245,8 @@
     footer {
       background: #070b16;
       color: #e5e7eb;
-      padding: 2.5rem 1.5rem;
+      padding: 2rem 1.5rem;
+      margin-top: auto;
     }
     .footer-inner {
       max-width: 1200px;
@@ -210,10 +265,83 @@
       clip: rect(0,0,0,0);
       border: 0;
     }
-    @media (max-width: 640px) {
-      nav ul { flex-wrap: wrap; }
-      .hero { padding: 2rem; }
+    @media (max-width: 768px) {
+      body { padding-top: 60px; }
+      main { padding: 1.5rem 1rem; min-height: calc(100vh - 60px); }
+      .page { min-height: calc(100vh - 120px); }
+      
+      .nav-bar {
+        padding: 0.5rem 1rem;
+        flex-wrap: wrap;
+      }
+      
+      nav {
+        order: 3;
+        width: 100%;
+        display: none;
+      }
+      nav.active {
+        display: block;
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem 0;
+        border-top: 1px solid rgba(15,23,42,0.08);
+      }
+      nav a {
+        display: block;
+        padding: 0.75rem 1rem;
+      }
+      
+      .mobile-menu-toggle {
+        display: block;
+      }
+      
+      .cta-btn {
+        padding: 0.65rem 1.2rem;
+        font-size: 0.85rem;
+      }
+      
+      .hero { 
+        padding: 1.5rem; 
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .hero figure {
+        max-height: 300px;
+        order: 2;
+      }
+      .hero h1 { font-size: clamp(1.8rem, 6vw, 2.5rem); }
+      .hero p { font-size: 1rem; }
+      
+      .section-title { font-size: 1.5rem; }
+      .split {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .benefits {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .newsletter { padding: 1.5rem; }
       .newsletter form { flex-direction: column; }
+      .testimonials { padding: 1.5rem; }
+      .card { padding: 1rem; }
+    }
+    
+    @media (max-width: 480px) {
+      .nav-bar {
+        padding: 0.5rem;
+      }
+      .logo img { height: 36px; max-width: 120px; }
+      main { padding: 1rem 0.75rem; }
+      .hero { padding: 1rem; }
+      .hero figure { max-height: 250px; }
     }
   </style>
 </head>
@@ -225,6 +353,7 @@
         <img src="logo.png" alt="ReGainX logo" />
       </a>
 
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
       <nav aria-label="Main" role="tablist">
         <ul>
           <li><a href="#home" data-page="home" aria-controls="home" role="tab" aria-current="page">Home</a></li>
@@ -316,7 +445,7 @@
             <li>Safety redundancies: angle limits, torque limits, energy efficiency.</li>
           </ul>
           <h3>How it works</h3>
-          <p>ReGainX uses embedded sensors along elbows, hips, knees, or lower back to capture motion intent in real time. Algorithms translate that data into responsive torque support, providing extra strength precisely when it’s needed. Rechargeable batteries last through daily routines, and the system integrates with tele-rehab dashboards for clinicians.</p>
+          <p>ReGainX uses embedded sensors along elbows, hips, knees, or lower back to capture motion intent in real time. Algorithms translate that data into responsive torque support, providing extra strength precisely when it's needed. Rechargeable batteries last through daily routines, and the system integrates with tele-rehab dashboards for clinicians.</p>
           <h3>Benefits</h3>
           <p>Improved endurance, reduced caregiver strain, and faster rehab progress—all within an approachable price point.</p>
           <div class="media-grid" aria-label="Hardware gallery">
@@ -361,7 +490,7 @@
           <p>Gentle lift assistance for standing, walking, and daily chores to keep seniors active longer.</p>
         </article>
         <article class="use-case">
-          <h3>Parkinson’s-affected movement</h3>
+          <h3>Parkinson's-affected movement</h3>
           <p>Smooths gait irregularities with adaptive stride support, reducing fatigue and fall risk.</p>
         </article>
         <article class="use-case">
@@ -388,11 +517,11 @@
       <h2 class="section-title">Feedback & Pilot Results</h2>
       <div class="testimonials">
         <blockquote>
-          “Sounds cool!”
+          "Sounds cool!"
         </blockquote>
         <p>— 67 year old Parkinson's patient</p>
         <blockquote>
-          “Your efforts and dedication are commendable!”
+          "Your efforts and dedication are commendable!"
         </blockquote>
         <p>— Executive Director, DAPS (Dallas Area Parkinson's Society)</p>
         <div style="margin-top:1.5rem;">
@@ -539,9 +668,27 @@
       history.replaceState(null, '', `#${page}`);
       setActivePage(page);
       window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+      
+      // Close mobile menu if open
+      const nav = document.querySelector('nav');
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      if (nav && menuToggle) {
+        nav.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
     }
 
     pageControls.forEach(ctrl => ctrl.addEventListener('click', handleControlClick));
+    
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    const nav = document.querySelector('nav');
+    if (menuToggle && nav) {
+      menuToggle.addEventListener('click', () => {
+        const isActive = nav.classList.toggle('active');
+        menuToggle.setAttribute('aria-expanded', isActive);
+      });
+    }
 
     window.addEventListener('load', () => {
       const requested = window.location.hash.replace('#', '') || 'home';
